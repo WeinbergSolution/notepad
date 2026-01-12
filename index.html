@@ -1,15 +1,32 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Notizblock</title>
-    <script src="./script.js"></script>
-    <link rel="stylesheett" href="./style.css" />
-    <link rel="stylesheet" href="./style/standard.css" />
-   
-  <body onload="randerNotes()">
-    <h1>Notizblock</h1>
-    <div id="content"></div>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notizblock</title>
+  <script src="./script.js"></script>
+  <link rel="stylesheett" href="style.css" />
+  <link rel="stylesheet" href="./style/standard.css" />
+
+<body onload="randerNotes()">
+  <h1>Notizblock</h1>
+  <input id="note_input" type="text" placeholder="notiz hinzufügen">
+  <button onclick="addNote()">save Notice</button>
+  <section class="action">
+    <div>
+      <h2>Notice</h2>
+      <div id="noticeContent"></div>
+    </div>
+    <div>
+      <h2>Archiv</h2>
+      <div id="archivContent"></div>
+    </div>
+    <div>
+      <h2>Trash</h2>
+      <div id="trashContent"></div>
+    </div>
+  </section>
+</body>
+
 </html>
