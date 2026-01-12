@@ -4,17 +4,17 @@
 let notes = [];
 
 // ich muss definieren wo sie anzuzeigen sind
-function randerNotes() {
+function renderNotes() {
   let contenRef = document.getElementById("noticeContent");
   contenRef.innerHTML = "";
   for (let indexNote = 0; indexNote < notes.length; indexNote++) {
-    const note = notes[indexNote];
-    contenRef.innerHTML += getNotesTamplate(note);
-  }
+    contenRef.innerHTML += getNotesTamplate(indexNote);
+  } // Welche Notiz muss gelöscht werden (indexNote)
 }
 
-function getNotesTamplate(note) {
-  return ` <p>+ ${note}</p>`;
+function getNotesTamplate(indexNote) {
+  // Welche Notiz muss gelöscht werden onclick(indexNote)
+  return ` <p>+ ${notes[indexNote]} <button onclick="deleteNote(${indexNote})">X</button></p>`;
 }
 
 // notizen hinzufügen
@@ -25,10 +25,20 @@ function addNote() {
   // eingabe den notizen hinzufügen
   notes.push(noteInput);
   // eingabe anzeigen lassen
-  randerNotes();
+  renderNotes();
   // clear Inputfield
   noteInputRef.value = "";
 }
 
 // notizen löschen
+// wann muss die notiz gelöscht werden (onclick)
+
+function deleteNote(indexNote) {
+  // Welche Notiz muss gelöscht werden
+  //Array.splice löscht ein element aus dem Array
+  notes.splice(indexNote, 1);
+  // anzeige updaten
+  renderNotes();
+}
+
 // notizen archivieren
