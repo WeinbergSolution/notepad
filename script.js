@@ -2,19 +2,20 @@
 // notizen anzeigen lassen
 // ich brauche notizen
 let notes = [];
+let trashNotes = [];
 
 // ich muss definieren wo sie anzuzeigen sind
 function renderNotes() {
-  let contenRef = document.getElementById("noticeContent");
-  contenRef.innerHTML = "";
+  let contentRef = document.getElementById("noticeContent");
+  contentRef.innerHTML = "";
   for (let indexNote = 0; indexNote < notes.length; indexNote++) {
-    contenRef.innerHTML += getNotesTamplate(indexNote);
+    contentRef.innerHTML += getNotesTamplate(indexNote);
   } // Welche Notiz muss gelöscht werden (indexNote)
 }
 
 function getNotesTamplate(indexNote) {
   // Welche Notiz muss gelöscht werden onclick(indexNote)
-  return ` <p>+ ${notes[indexNote]} <button onclick="deleteNote(${indexNote})">X</button></p>`;
+  return ` <p>+ ${notes[indexNote]} <button onclick="deleteNotePushToTrash(${indexNote})">X</button></p>`;
 }
 
 // notizen hinzufügen
@@ -33,12 +34,44 @@ function addNote() {
 // notizen löschen
 // wann muss die notiz gelöscht werden (onclick)
 
-function deleteNote(indexNote) {
+function deleteNotePushToTrash(indexNote) {
   // Welche Notiz muss gelöscht werden
   //Array.splice löscht ein element aus dem Array
-  notes.splice(indexNote, 1);
-  // anzeige updaten
+  let trashNote = notes.splice(indexNote, 1);
+  //gelöschtes element wird in das trashnotes[] Array geschoben
+  trashNotes.push(trashNote);
+  // anzeige updaten notizen
   renderNotes();
+  // anzeige Trash notice update
+  renderTrashNotes();
 }
 
 // notizen archivieren
+
+// gelöschte notizen in den Mülleimer schieben
+function renderTrashNotes() {
+  let contentTrashRef = document.getElementById("trashContent");
+  contentTrashRef.innerHTML = "";
+  for (
+    let indexTrashNote = 0;
+    indexTrashNote < trashNotes.length;
+    indexTrashNote++
+  ) {
+    contentTrashRef.innerHTML += getTrashNotesTamplate(indexTrashNote);
+  } // Welche Notiz muss gelöscht werden (indexNote)
+}
+
+function getTrashNotesTamplate(indexTrashNote) {
+  // Welche Notiz muss gelöscht werden onclick(indexNote)
+  return ` <p>+ ${trashNotes[indexTrashNote]} <button onclick="deleteTrashNote(${indexTrashNote})">X</button></p>`;
+}
+
+// Element aus Trash löschen
+function deleteTrashNote(indexNote) {
+  // Welche Notiz muss gelöscht werden
+  //Array.splice löscht ein element aus dem Array
+  trashNotes.splice(indexNote, 1);
+  //notiz aus trahs löschen , aus dem array löschen
+  // anzeige Trash notice update
+  renderTrashNotes();
+}
