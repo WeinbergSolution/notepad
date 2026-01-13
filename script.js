@@ -2,10 +2,13 @@
 // notizen anzeigen lassen
 // ich brauche notizen
 let notes = [];
-let notesTitle = [];
+let notesTitles = [];
 
 let trashNotes = [];
 let trashTitles = [];
+
+let archivnotes = [];
+let archivTitles = [];
 
 // ich muss definieren wo sie anzuzeigen sind
 function renderNotes() {
@@ -14,11 +17,15 @@ function renderNotes() {
   for (let indexNote = 0; indexNote < notes.length; indexNote++) {
     contentRef.innerHTML += getNotesTamplate(indexNote);
   } // Welche Notiz muss gelöscht werden (indexNote)
+
+  // Holt aus dem LocalStorage
+  getFromLocalStorage();
+  archivRender();
 }
 
 function getNotesTamplate(indexNote) {
   // Welche Notiz muss gelöscht werden onclick(indexNote)
-  return ` <p>Title: ${notesTitle[indexNote]} Notiz: ${notes[indexNote]} 
+  return ` <p>Title: ${notesTitles[indexNote]} Notiz: ${notes[indexNote]} 
   <button onclick="deleteNotePushToTrash(${indexNote})">X</button></p>
   <p></p>`;
 }
@@ -31,10 +38,12 @@ function addNote() {
   let noteInputRef = document.getElementById("note_input");
   let noteInput = noteInputRef.value;
   // eingabe den notizen hinzufügen
-  notesTitle.push(noteTitleInput);
+  notesTitles.push(noteTitleInput);
   notes.push(noteInput);
   // eingabe anzeigen lassen
   renderNotes();
+  //ins Archiv speichern
+  saveData();
   // clear Inputfield
   noteTitleInput.value = "";
   noteInputRef.value = "";
@@ -46,11 +55,11 @@ function addNote() {
 function deleteNotePushToTrash(indexNote) {
   // Welche Notiz muss gelöscht werden
   //Array.splice löscht ein element aus dem Array
-  let trashTitle = notesTitle.splice(indexNote, 1);
+  let trashTitle = notesTitles.splice(indexNote, 1);
   let trashNote = notes.splice(indexNote, 1);
   //gelöschtes element wird in das trashnotes[] Array geschoben
-  trashTitles.push(trashTitle[0]);
-  trashNotes.push(trashNote[0]);
+  trashTitles.push(trashTitle[indexNote]);
+  trashNotes.push(trashNote[indexNote]);
   // anzeige updaten notizen
   renderNotes();
   // anzeige Trash notice update
@@ -91,8 +100,78 @@ function deleteTrashNote(indexNote) {
 
 // Archiv
 
-function SaveData() {}
+function saveData() {
+  // referenz auf data_input / <input> feld
+  let noteTitleInputRef = document.getElementById("titleNote_input");
+  let noteInputRef = document.getElementById("note_input");
 
-function saveToLocalStorage() {}
+  // ist die eingabe im Inputfeld nicht = leer dann ....
+  if (noteTitleInputRef.value != "" || noteInputRef.value != "") {
+    //pusht die eingabe aus dem inputfeld in das Array myData
+    archivnotes.push(noteInputRef.value);
 
-function getFromLocalStorage() {}
+    archivTitles.push(noteTitleInputRef.value);
+  }
+
+  // aufruf der function saveToLocalStorage
+  saveToLocalStorage();
+  // aufruf der function render(), welches die sachen im Div mit der ID="content" sichtbar macht
+  archivRender();
+}
+
+function saveToLocalStorage() {
+  // setzt eine Key & Value in den localStorage.
+  //Value wird als JSON, als String "," Seperiert in das Array my notes bzw  notesTitles geschrieben.
+  localStorage.setItem("archivNotes", JSON.stringify(archivnotes));
+  localStorage.setItem("ArchivTitles", JSON.stringify(archivTitles));
+}
+
+// Function um Einträge aus dem LocalStorage aus zu lesen
+function getFromLocalStorage() {
+  // JSON.parse(localStorage.getItem("notes")) -> parset das ganze zurück in ein Objekt bzw Array und speichert es in myNotesArray.
+  let myNotesArray = JSON.parse(localStorage.getItem("archivNotes"));
+  let myTitlesArray = JSON.parse(localStorage.getItem("ArchivTitles"));
+  // ist myArray ungleich null dann mach nix ... sonst speicher myArray in myData.
+  if ((myNotesArray !== null) & (myTitlesArray !== null)) {
+    archivnotes = myNotesArray;
+    archivTitles = myTitlesArray;
+  }
+  // speichert es dann in myData
+}
+
+function archivRender() {
+  //referenz auf das element mit der Id "content" (das ist ein div)
+  let contentRef = document.getElementById("archivContent");
+  // leeren des innerHTML von dem Element mit der ID "content" damit wenn neue
+  // hinhalte hinzukommen, nicht die alten wieder mit reingeworfen werden die schon da sind
+  contentRef.innerHTML = "";
+
+  // Forschleife zum durchiterieren durch das Array myData
+  // solange index größer als Array länge dann ...
+  for (let index = 0; index < archivnotes.length; index++) {
+    // schreibe in das innerHtml von contentRef also dem Element mit der id="content", also dem div folgendes ...
+    contentRef.innerHTML += getArchivTamplate(index);
+  }
+}
+
+function getArchivTamplate(indexNote) {
+  // Welche Notiz muss gelöscht werden onclick(indexNote)
+  return ` <p>Title: ${archivTitles[indexNote]} Notiz: ${archivnotes[indexNote]} 
+  <button onclick="deleteArchivNote(${indexNote})">X</button></p>
+  <p></p>`;
+}
+
+function deleteArchivNote(indexNote) {
+  // Welche Notiz muss gelöscht werden
+  //Array.splice löscht ein element aus dem Array
+  archivnotes.splice(indexNote, 1);
+  archivTitles.splice(indexNote, 1);
+  // schreibt das durch splice gekürzte Array neu in den local storage.
+  localStorage.setItem("archivNotes", JSON.stringify(archivnotes));
+  localStorage.setItem("ArchivTitles", JSON.stringify(archivTitles));
+  //notiz aus trahs löschen , aus dem array löschen
+  // anzeige Trash notice update
+
+  //localStorage.removeItem() ..... warum entfernt das das ganze Array und man kann kein index dazu nutzen ?
+  archivRender();
+}
