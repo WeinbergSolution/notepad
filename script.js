@@ -26,7 +26,7 @@ function renderNotes() {
 function getNotesTamplate(indexNote) {
   // Welche Notiz muss gelöscht werden onclick(indexNote)
   return ` <p>Title: ${notesTitles[indexNote]} Notiz: ${notes[indexNote]} 
-  <button onclick="deleteNotePushToTrash(${indexNote})">X</button></p>
+  <button onclick="deleteNotePushToTrash(${indexNote})">X</button><button onclick="saveData(${indexNote})">A</button></p>
   <p></p>`;
 }
 
@@ -43,9 +43,9 @@ function addNote() {
   // eingabe anzeigen lassen
   renderNotes();
   //ins Archiv speichern
-  saveData();
+
   // clear Inputfield
-  noteTitleInput.value = "";
+  noteTitleInputRef.value = "";
   noteInputRef.value = "";
 }
 
@@ -84,7 +84,9 @@ function renderTrashNotes() {
 function getTrashNotesTamplate(indexTrashNote) {
   // Welche Notiz muss gelöscht werden onclick(indexNote)
   return ` <p>Title: ${trashTitles[indexTrashNote]} Notiz:
-   ${trashNotes[indexTrashNote]} <button onclick="deleteTrashNote(${indexTrashNote})">X</button></p>`;
+   ${trashNotes[indexTrashNote]} <button onclick="deleteTrashNote(${indexTrashNote})">X</button>
+   <button onclick="recoverToArchiv(${indexTrashNote})">Back to A</button>
+    <button onclick="recoverToNotice(${indexTrashNote})">Back to Notic</button></p>`;
 }
 
 // Element aus Trash löschen
@@ -100,22 +102,19 @@ function deleteTrashNote(indexNote) {
 
 // Archiv
 
-function saveData() {
-  // referenz auf data_input / <input> feld
-  let noteTitleInputRef = document.getElementById("titleNote_input");
-  let noteInputRef = document.getElementById("note_input");
+function saveData(indexNote) {
+  // Welche Notiz muss gelöscht werden
+  //Array.splice löscht ein element aus dem Array
+  let archivTitle = notesTitles.splice(indexNote, 1);
+  let archivnote = notes.splice(indexNote, 1);
 
-  // ist die eingabe im Inputfeld nicht = leer dann ....
-  if (noteTitleInputRef.value != "" || noteInputRef.value != "") {
-    //pusht die eingabe aus dem inputfeld in das Array myData
-    archivnotes.push(noteInputRef.value);
-
-    archivTitles.push(noteTitleInputRef.value);
-  }
-
+  //gelöschtes element wird in das trashnotes[] Array geschoben
+  archivTitles.push(archivTitle[indexNote]);
+  archivnotes.push(archivnote[indexNote]);
   // aufruf der function saveToLocalStorage
   saveToLocalStorage();
   // aufruf der function render(), welches die sachen im Div mit der ID="content" sichtbar macht
+  renderNotes();
   archivRender();
 }
 
@@ -157,8 +156,31 @@ function archivRender() {
 function getArchivTamplate(indexNote) {
   // Welche Notiz muss gelöscht werden onclick(indexNote)
   return ` <p>Title: ${archivTitles[indexNote]} Notiz: ${archivnotes[indexNote]} 
-  <button onclick="deleteArchivNote(${indexNote})">X</button></p>
+  <button onclick="deleteArchivPushToTrash(${indexNote})">X</button></p>
   <p></p>`;
+}
+
+function deleteArchivPushToTrash(indexNote) {
+  // Welche Notiz muss gelöscht werden
+  //Array.splice löscht ein element aus dem Array
+  let archivTitle = archivTitles.splice(indexNote, 1);
+  let archivNote = archivnotes.splice(indexNote, 1);
+  //gelöschtes element wird in das trashnotes[] Array geschoben
+  trashTitles.push(archivTitle[indexNote]);
+  trashNotes.push(archivNote[indexNote]);
+  // anzeige updaten archiv
+  archivRender();
+  // anzeige Trash notice update
+  renderTrashNotes();
+  // Welche Notiz muss gelöscht werden
+  //Array.splice löscht ein element aus dem Array
+  archivnotes.splice(indexNote, 1);
+  archivTitles.splice(indexNote, 1);
+  // schreibt das durch splice gekürzte Array neu in den local storage.
+  localStorage.setItem("archivNotes", JSON.stringify(archivnotes));
+  localStorage.setItem("ArchivTitles", JSON.stringify(archivTitles));
+  //notiz aus trahs löschen , aus dem array löschen
+  // anzeige Trash notice update
 }
 
 function deleteArchivNote(indexNote) {
@@ -174,4 +196,40 @@ function deleteArchivNote(indexNote) {
 
   //localStorage.removeItem() ..... warum entfernt das das ganze Array und man kann kein index dazu nutzen ?
   archivRender();
+}
+
+function recoverToArchiv(indexNote) {
+  // Welche Notiz muss gelöscht werden
+  //Array.splice löscht ein element aus dem Array
+  let archivTitle = trashTitles.splice(indexNote, 1);
+  let archivNote = trashNotes.splice(indexNote, 1);
+  //gelöschtes element wird in das trashnotes[] Array geschoben
+  archivTitles.push(archivTitle[indexNote]);
+  archivnotes.push(archivNote[indexNote]);
+  // anzeige Trash notice update
+  renderTrashNotes();
+
+  // Welche Notiz muss gelöscht werden
+  //Array.splice löscht ein element aus dem Array
+  trashNotes.splice(indexNote, 1);
+  trashTitles.splice(indexNote, 1);
+  // schreibt das durch splice gekürzte Array neu in den local storage.
+  saveToLocalStorage();
+  //notiz aus trahs löschen , aus dem array löschen
+  // anzeige Trash notice update
+  archivRender();
+}
+
+function recoverToNotice(indexNote) {
+  // Welche Notiz muss gelöscht werden
+  //Array.splice löscht ein element aus dem Array
+  let noteTitle = trashTitles.splice(indexNote, 1);
+  let note = trashNotes.splice(indexNote, 1);
+  //gelöschtes element wird in das trashnotes[] Array geschoben
+  notesTitles.push(noteTitle[indexNote]);
+  notes.push(note[indexNote]);
+  // anzeige updaten notizen
+  renderNotes();
+  // anzeige Trash notice update
+  renderTrashNotes();
 }

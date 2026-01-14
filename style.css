@@ -1,8 +1,54 @@
-/* Globale Css  */
+/* Global Css  */
+/* *********************************
+ROOT 
+************************************/
 
+:root {
+  --max-width: 1440px;
+}
 
+/* *********************************
+LAYOUT & MAIN
+************************************/
 
-section {
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 40px;
+  width: 100%;
+}
+.container-inner {
   display: flex;
   justify-content: space-around;
+}
+
+main {
+  min-height: calc(100vh - 81px - 80px);
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+/* *********************************
+LAYOUT & Header
+************************************/
+.head {
+  background-color: #09212a;
+  padding: 20px 140px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.container_head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.logo {
+  width: 40px;
+  height: auto;
 }
