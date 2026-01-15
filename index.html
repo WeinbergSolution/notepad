@@ -5,17 +5,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Notizblock</title>
+
+  <script src="./scripts/templates.js"></script>
   <script src="./script.js"></script>
+
+
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="./styles/standard.css" />
+  <link rel="stylesheet" href="./styles/note.css">
+  <link rel="stylesheet" href="./styles/assets.css">
 
 <body onload="renderNotes()">
   <h1>Notizblock</h1>
+  
+  <div class="inputbox">
+    <p>Title: </p>
    <input id="titleNote_input" type="text" placeholder="title hinzufügen">
+   <p>Content: </p>
   <input id="note_input" type="text" placeholder="notiz hinzufügen">
-  <button onclick="addNote()">save Notice</button>
-  <section class="container container-inner">
-    <div>
+  <button  onclick="addNote()">save Notice</button>
+  </div>
+  <section class="notebox">
+    <div class="">
       <h2>Notice</h2>
       <div id="noticeContent"></div>
      

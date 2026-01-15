@@ -23,13 +23,6 @@ function renderNotes() {
   archivRender();
 }
 
-function getNotesTamplate(indexNote) {
-  // Welche Notiz muss gelöscht werden onclick(indexNote)
-  return ` <p>Title: ${notesTitles[indexNote]} Notiz: ${notes[indexNote]} 
-  <button onclick="deleteNotePushToTrash(${indexNote})">X</button><button onclick="saveData(${indexNote})">A</button></p>
-  <p></p>`;
-}
-
 // notizen hinzufügen
 //  eingabe auslesen
 function addNote() {
@@ -37,9 +30,12 @@ function addNote() {
   let noteTitleInput = noteTitleInputRef.value;
   let noteInputRef = document.getElementById("note_input");
   let noteInput = noteInputRef.value;
+
   // eingabe den notizen hinzufügen
-  notesTitles.push(noteTitleInput);
-  notes.push(noteInput);
+  if ((noteTitleInputRef.value != "") & (noteInputRef.value != "")) {
+    notesTitles.push(noteTitleInput);
+    notes.push(noteInput);
+  }
   // eingabe anzeigen lassen
   renderNotes();
   //ins Archiv speichern
@@ -79,14 +75,6 @@ function renderTrashNotes() {
   ) {
     contentTrashRef.innerHTML += getTrashNotesTamplate(indexTrashNote);
   } // Welche Notiz muss gelöscht werden (indexNote)
-}
-
-function getTrashNotesTamplate(indexTrashNote) {
-  // Welche Notiz muss gelöscht werden onclick(indexNote)
-  return ` <p>Title: ${trashTitles[indexTrashNote]} Notiz:
-   ${trashNotes[indexTrashNote]} <button onclick="deleteTrashNote(${indexTrashNote})">X</button>
-   <button onclick="recoverToArchiv(${indexTrashNote})">Back to A</button>
-    <button onclick="recoverToNotice(${indexTrashNote})">Back to Notic</button></p>`;
 }
 
 // Element aus Trash löschen
@@ -151,13 +139,6 @@ function archivRender() {
     // schreibe in das innerHtml von contentRef also dem Element mit der id="content", also dem div folgendes ...
     contentRef.innerHTML += getArchivTamplate(index);
   }
-}
-
-function getArchivTamplate(indexNote) {
-  // Welche Notiz muss gelöscht werden onclick(indexNote)
-  return ` <p>Title: ${archivTitles[indexNote]} Notiz: ${archivnotes[indexNote]} 
-  <button onclick="deleteArchivPushToTrash(${indexNote})">X</button></p>
-  <p></p>`;
 }
 
 function deleteArchivPushToTrash(indexNote) {
